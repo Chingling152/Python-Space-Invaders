@@ -1,12 +1,16 @@
 import turtle
 
-class Map:
+class WorldBorder:
 
-    def create_border(self):
-        '''
-        Cria um objeto do tipo turtle e coloca suas definições padrão
-        :return: Um objeto do tipo turtle ja desenhado na tela
-        '''
+    limit_x : float
+    limit_y : float
+
+    def __init__(self,sizex,sizey):
+        self.size_x = sizex
+        self.size_y = sizey
+        self.limit_x = sizex /2 - 20
+        self.limit_y = sizey / 2 - 20
+
         border = turtle.Turtle()
         border.speed(0)  # 0 = velocidade mais rapida da caneta
         border.color("white")
@@ -19,14 +23,21 @@ class Map:
         # move a caneta ao redor da tela
         for i in range(4):
             if (i % 2 == 0):
-                border.fd(800)
+                border.fd(sizex)
             else:
-                border.fd(700)
+                border.fd(sizey)
 
             border.lt(90)
 
         border.hideturtle()
-        return border
+
+
+class World:
+
+    world_border: WorldBorder
 
     def __init__(self):
-        self.border = self.create_border()
+        self.world_border = WorldBorder(800,700)
+
+    def get_border_x(self):
+        return self.world_border.size_x /2
