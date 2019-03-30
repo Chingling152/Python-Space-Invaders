@@ -13,21 +13,23 @@ world = GameObjects.World()
 player = Characters.Player(
     x = 0, y =-300, speed=10,
     color ="green", sprite="triangle",
-    limit = world.world_border.limit_x
+    limit_x = world.world_border.limit_x,limit_y =world.world_border.limit_y
 )
 enemy = Characters.Enemy(
     x=-300,y=300,speed=1,
     color="red",sprite="circle",
-    limit = world.world_border.limit_x,limit_y =world.world_border.limit_y
+    limit_x = world.world_border.limit_x,limit_y =world.world_border.limit_y
 )
 
 # Definindo teclas
 win.listen() # listen significa que está recebendo as teclas de atribuição (ouvindo)
 win.onkey(player.move_left, "Left")
 win.onkey(player.move_right, "Right")
+win.onkey(player.shoot, "spc")
 
 while True:
     enemy.move()
+
     if(not player.alive):
         break
 

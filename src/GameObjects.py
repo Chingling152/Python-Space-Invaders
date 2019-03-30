@@ -41,3 +41,4 @@ class World:
 
     def get_border_x(self):
         return self.world_border.size_x /2
+
