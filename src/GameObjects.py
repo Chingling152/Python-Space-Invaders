@@ -8,8 +8,8 @@ class WorldBorder:
     def __init__(self,sizex,sizey):
         self.size_x = sizex
         self.size_y = sizey
-        self.limit_x = sizex /2 - 20
-        self.limit_y = sizey / 2 - 20
+        self.limit_x = sizex /2 - 15
+        self.limit_y = sizey / 2 - 15
 
         border = turtle.Turtle()
         border.speed(0)  # 0 = velocidade mais rapida da caneta
@@ -41,4 +41,3 @@ class World:
 
     def get_border_x(self):
         return self.world_border.size_x /2
-

@@ -1,3 +1,4 @@
+import math
 import turtle
 
 class Entity:
@@ -9,22 +10,59 @@ class Entity:
     limit_x: float
     limit_y: float
 
+    #strength: int
+
     def __init__(self,x,y,speed,color,sprite,limit_x,limit_y):
         self.alive = True
         self.body = turtle.Turtle()
         self.speed = speed
         self.limit_x = limit_x
         self.limit_y = limit_y
-        # criando o corpo
+        # creating the body
+        self.body.hideturtle()#let invisible
         self.body.color(color)
         self.body.shape(sprite)
         self.body.penup()
         self.body.speed(0)
-        self.body.setposition(x,y)
+        self.body.setposition(x, y)
         self.body.setheading(90)
+        self.body.showturtle()# just showing it after it's drawn
 
     def move(self):
         self.body.forward(self.speed)
+
+    def collision(self,other):
+        '''
+        collision system (destroy de collider)
+        :param other: a object of type Entity
+        :return: return a TypeError Exception if the collide isnt a Entity
+        '''
+        try:
+            dist_x = math.pow(self.body.xcor() - other.body.xcor(), 2)
+            dist_y = math.pow(self.body.ycor() - other.body.ycor(), 2)
+            distance = math.sqrt(dist_x + dist_y)
+
+            if(distance < 10):
+                self.body.hideturtle()
+                del self
+        except:
+            raise TypeError("Isn't a collider")
+
+
+class Bullet(Entity):
+
+    def __init__(self,x,y,limit_x,limit_y):
+        Entity.__init__(self,x=x,y=y,speed=20,color="yellow",sprite="triangle",limit_x=limit_x,limit_y= limit_y)
+        self.body.shapesize(0.5, 0.5)
+
+    def move(self):
+        y = self.body.ycor() + self.speed
+        if(self.body.ycor() < self.limit_y):
+            self.body.sety(y)
+        else:
+            self.body.hideturtle()
+            del self
+
 
 class Enemy(Entity):
 
@@ -43,10 +81,16 @@ class Player(Entity):
 
     lifes : int
     score : int
+    fire: float
+    fire_rate: float
+    bullets = []
 
     def __init__(self,x,y,speed,color,sprite,limit_x,limit_y):
         self.lifes = 3
         self.score = 0
+        self.fire = 0
+        self.fire_rate = 5
+        self.bullets = []
         Entity.__init__(self,x,y,speed,color,sprite,limit_x,limit_y)
 
     def move_left(self):
@@ -60,14 +104,29 @@ class Player(Entity):
             self.body.setx(x)
 
     def shoot(self):
-        bullet = Bullet(self.body.xcor(),self.body.ycor(),self.limit_x,self.limit_y)
+        if(self.fire > self.fire_rate):
+            self.fire = 0
+            self.bullets.append(Bullet(self.body.xcor(),self.body.ycor()+15,self.limit_x,self.limit_y))
 
-class Bullet(Entity):
 
-    def __init__(self,x,y,limit_x,limit_y):
-        self.body.shapesize(0.5,0.5)
-        Entity.__init__(self,x=x,y=y,speed=5,color="yellow",sprite="triangle",limit_x=limit_x,limit_y= limit_y)
+class EnemyWave:
+    Wave: int = 1
+    WaveDifficult:int = 1
+    enemies: []
 
-    def move(self):
-        if(self.body.ycor() < self.limit_y):
-            Entity.move()
+    def __init__(self, quantity,limit_x,limit_y):
+        self.enemies = []
+
+        x = limit_x -30
+        y = limit_y -30
+        for i in range(quantity):
+            self.enemies.append(Enemy(
+                x= -x,y = y ,speed=EnemyWave.WaveDifficult,
+                color="red",sprite="circle",
+                limit_x = limit_x,limit_y = limit_y)
+            )
+
+            x -= 30
+            if(x >= limit_x):
+                x = limit_x
+                y -=30
