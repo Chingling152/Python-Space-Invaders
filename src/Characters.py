@@ -33,18 +33,21 @@ class Entity:
 
     def collision(self,other):
         '''
-        collision system (destroy de collider)
+        collision system (destroy both colliders)
         :param other: a object of type Entity
-        :return: return a TypeError Exception if the collide isnt a Entity
+        :return: return a TypeError Exception if the collide isn't a Entity
         '''
         try:
             dist_x = math.pow(self.body.xcor() - other.body.xcor(), 2)
             dist_y = math.pow(self.body.ycor() - other.body.ycor(), 2)
             distance = math.sqrt(dist_x + dist_y)
 
-            if(distance < 10):
+            if(distance < 20):
                 self.body.hideturtle()
                 del self
+
+                other.body.hideturtle()
+                del other
         except:
             raise TypeError("Isn't a collider")
 
@@ -56,6 +59,10 @@ class Bullet(Entity):
         self.body.shapesize(0.5, 0.5)
 
     def move(self):
+        '''
+        Bullet movement
+        increases the y axis until find the world border
+        '''
         y = self.body.ycor() + self.speed
         if(self.body.ycor() < self.limit_y):
             self.body.sety(y)
@@ -70,12 +77,17 @@ class Enemy(Entity):
         Entity.__init__(self, x, y, speed, color, sprite, limit_x,limit_y)
 
     def move(self):
+        '''
+        Enemy movement
+        increases the x until find the world border ,after that decreases the x axis
+        '''
         x = self.body.xcor() + self.speed
         if(x < self.limit_x and x > -self.limit_x):
             self.body.setx(x)
         else:
             self.body.sety(self.body.ycor()-30)
             self.speed = -self.speed
+
 
 class Player(Entity):
 

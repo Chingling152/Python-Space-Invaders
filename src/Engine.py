@@ -59,6 +59,8 @@ class Room(Screen):
                 for i in self.player.bullets:
                     if(i.body.isvisible()):
                         i.move()
+                        for j in self.wave.enemies:
+                            i.collision(j)
                     else:
                         self.player.bullets.remove(i)
 
